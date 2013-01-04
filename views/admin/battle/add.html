@@ -1,0 +1,31 @@
+<div class="form-horizontal">
+	<form action="add" method="post">
+		<div class="control-group">
+			<label class="control-label" for="division1"> Battle :</label>
+			<div class="controls">				
+				<select id="division1" name="division1">
+					{{#each divisions}}
+  						<option value="{{_id}}">{{label}}</option>
+  					{{/each}}
+            	</select>
+            	&nbsp;VS&nbsp;
+            	<select id="division2" name="division2">
+					{{#each divisions2}}
+  						<option value="{{_id}}">{{label}}</option>
+  					{{/each}}
+            	</select>
+			</div>
+			<br />
+			
+			<label class="control-label" for="duree"> Durée (minutes) :</label>
+			<div class="controls">
+				<input type="text" name="duree" value="90" />
+			</div>
+			
+			<br />
+			<div class="form-actions">
+				<input type="submit" class="btn btn-primary" value="Créer" />
+	        </div>			
+		</div>		
+	</form>
+</div>

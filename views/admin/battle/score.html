@@ -1,0 +1,30 @@
+<div class="form-horizontal">
+	<form method="post">
+		<div class="control-group">
+		
+			<div>{{battle.label}}</div>
+			<br />
+			
+			<label class="control-label" for="team"> Equipe :</label>
+			<div class="controls">
+				<select id="team" name="team">
+					{{#each teams}}
+  						<option value="{{_id}}">{{name}}</option>
+  					{{/each}}
+            	</select>				
+			</div>
+			<br />
+			
+			<label class="control-label" for="score"> Points :</label>
+			<div class="controls">
+				<input type="text" name="score" value="0" />
+			</div>			
+			<input type="hidden" name="_method" value="PUT" />
+			<br />
+			<div class="form-actions">
+				<input type="submit" class="btn btn-primary" value="Valider" />&nbsp;
+				<a class="btn" href="/battle/{{battle.id}}">Retour au tableau de bord</a>&nbsp;           
+	        </div>			
+		</div>		
+	</form>
+</div>

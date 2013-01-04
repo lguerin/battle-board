@@ -1,0 +1,8 @@
+app:
+  port: 3000
+  cookie_secret: "your secret key salt goes here"
+db:
+  url: "mongodb://localhost/battle"
+auth:
+  salt: "batte!98(-qsd#"
+  default_admin_pass: "battle!2013"

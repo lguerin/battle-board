@@ -1,0 +1,29 @@
+<div class="form-horizontal">
+	<form action="/login" method="post">
+	
+		{{#if error}}
+			<div class="alert alert-error">
+				{{error}}
+			</div>		
+		{{/if}}
+	
+		<div class="control-group">
+			<label class="control-label" for="user[login]"> Login : </label>
+			<div class="controls">
+				<input type="text" name="user[login]" />
+			</div>
+			<br />
+			
+			<label class="control-label" for="user[password]"> Mot de passe :</label>
+			<div class="controls">
+				<input type="password" name="user[password]" />
+			</div>
+			<br />
+			
+			<br />
+			<div class="form-actions">
+				<input type="submit" class="btn btn-primary" value="Connexion" />
+	        </div>			
+		</div>		
+	</form>
+</div>

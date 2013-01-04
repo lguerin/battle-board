@@ -1,0 +1,27 @@
+{{!< home-layout.html}}
+
+<div class="row">
+
+	{{#if disconnect}}
+		<div class="alert alert-success">
+			Vous êtes à présent déconnecté.
+		</div>		
+	{{/if}}
+
+	<ul class="thumbnails accueil">
+		<li class="span8 offset1">
+			<div class="thumbnail">
+				<img src="/img/battle-board.png" alt="Battle Board logo" />
+				<hr />
+				<p class="text-info" align="center">
+					<em>
+						Aucune Battle en cours.<br />
+						Veuillez vous connecter pour initialiser une Battle.
+					</em>
+				</p>
+			</div>
+		</li>
+	</ul>
+	<br />
+
+</div>

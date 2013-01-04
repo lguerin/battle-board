@@ -1,0 +1,30 @@
+<div class="row-fluid">
+	<div id="content" class="span12>">
+		<ul class="thumbnails">
+			{{#if teams}}
+				{{#each teams}}
+	  			<li>
+	 				<a style="text-align: center;" class="thumbnail plain" href="/admin/team/view/{{id}}">
+	    				<img width="50" class="team-logo" src="/photos/{{logo}}" />	    				
+	    				<h5>{{name}}</h5>
+	    				<br clear="both" />
+			    		<i class="icon-globe"></i> {{division.label}}
+			    		<div>
+				    		{{#each members}}
+				    			{{name}} <br />
+				    		{{/each}}
+			    		</div>
+					</a>
+	  			</li>
+	  			{{/each}}
+  			{{else}}
+  				La liste des équipes est vide.
+  			{{/if}}
+		</ul>
+		
+		<br />
+		<div class="form-actions">
+            <a href="/admin/team/add" class="btn btn-primary">Nouvelle équipe</a>
+        </div>	
+	</div>
+</div>

@@ -1,0 +1,72 @@
+// Import Bootstrap 2 templates
+// -----------------------------
+@import "../libs/bootstrap/less/bootstrap.less";
+
+// Variables to customize the look and feel of Bootstrap
+// -----------------------------------------------------
+
+	
+// Other styles
+// ------------
+
+.main-container {
+  	margin-left: 20px;
+  	margin-right: 20px;	
+}
+
+.mini-layout {
+	border: 1px solid @tableBorder;
+  	.border-radius(@baseBorderRadius);
+  	.box-shadow(0 1px 3px rgba(0,0,0,.055));
+  	padding: 20px;
+}
+
+.menu {
+	float: right;
+	margin-top: 5px;
+	margin-bottom: 5px;
+    padding-right: 20px;
+    position: relative;
+}
+
+.team-logo {
+	position: relative;
+	float: right;
+}
+
+.accueil {
+	hr {
+		margin: 20px;
+	}
+}
+
+.row {
+	margin-left: 0;
+}
+
+input[type="file"] {
+    height: 23px;
+    line-height: 23px;
+}
+
+.scores .teams {
+   overflow: hidden;
+   margin: 20px 0;
+   padding-left: 55px;
+}
+ 
+ .scores .teams li {
+   display: block;
+   width: 96px;
+   height: 96px;
+   margin: 10px;
+   float: left;
+   border: 16px solid rgba(0,0,0,0.2);
+   -webkit-border-radius: 8px;
+   -moz-border-radius: 8px;
+   border-radius: 8px;
+}
+ 
+ .scores .new {
+   display: none;
+}

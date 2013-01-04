@@ -1,0 +1,18 @@
+<div class="row-fluid">
+	<div id="content" class="span12>">
+		<ul class="thumbnails">
+			{{#if players}}
+				{{#each players}}
+	  			<li>
+	 				<a style="text-align: center;" class="thumbnail plain" href="/admin/player/edit/{{id}}">
+						{{name}} <br />
+						<i class="icon-globe"></i> {{division.label}}
+					</a>
+	  			</li>
+	  			{{/each}}
+  			{{else}}
+  				La liste des membres est vide.
+  			{{/if}}
+		</ul>
+	</div>
+</div>

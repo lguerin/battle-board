@@ -1,0 +1,33 @@
+<div class="form-horizontal">
+	<form action="edit" method="post" enctype="multipart/form-data">
+		<div class="control-group">
+			<label class="control-label" for="name"> Nom :</label>
+			<div class="controls">
+				<input type="text" name="name" value="{{player.name}}"/>
+			</div>
+			<br />
+			
+			<label class="control-label" for="division"> Division :</label>
+			<div class="controls">
+				<select id="division" name="division">
+					{{#each divisions}}
+  						<option value="{{_id}}">{{label}}</option>
+  					{{/each}}
+            	</select>
+			</div>
+			<br />
+			
+			<label class="control-label" for="logo"> Photo :</label>
+			<div class="controls">
+				<span class="btn-file">
+					<input type="file" name="photo" />
+				</span>	
+			</div>
+			
+			<br />
+			<div class="form-actions">
+				<input type="submit" class="btn btn-primary" value="Enregistrer" />
+	        </div>			
+		</div>		
+	</form>
+</div>

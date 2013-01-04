@@ -1,0 +1,1 @@
+supervisor -w .,routes,models,lib,config app.js
