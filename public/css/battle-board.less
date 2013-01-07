@@ -89,7 +89,8 @@ input[type="file"] {
 	padding-left: 10px;
    	li {
 		display: block;
-   		margin: 10px;
+   		margin-left: 10px;
+   		margin-right: 10px;
    		float: left;   		
    }
 }
@@ -98,6 +99,22 @@ input[type="file"] {
 	display: none;
 }
 
+.scores .teams li.first {
+	width: 800px;
+	text-align: center;	
+}
+
+.scores .teams li.second {
+	width: 350px;
+	float: left;
+	text-align: right;	
+}
+
+.scores .teams li.third {
+	width: 450px;
+	float: right;
+	text-align: left;
+}
 
 strong {
     font-size: 25px;
@@ -119,7 +136,7 @@ strong {
     display: inline-block;
     background: #f6f6f6;
     border: 1px solid #CCC;
-    margin: 20px auto;
+    margin-top: 20px;
     position: relative;
     padding: 10px 10px 10px;
     width: 190px;
@@ -140,7 +157,8 @@ strong {
 
 .wrap img {
     position: top;
-    
+    width: 50px;
+    height: 50px;
 }
 
 .noise {
@@ -200,25 +218,4 @@ strong {
 p{ 
     margin-top: 15px;
     text-align: justify;
-}
-
-#pointed {
-    position: relative;
-    margin: 0 auto;
-    width: 200px;
-    height: 100px;
-    background-color: white;
-}
-#pointed:after,
-#pointed::after {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -50%;
-    content: '';
-    width: 0;
-    height: 0;
-    border-top: solid 100px red;
-    border-left: solid 100px transparent;
-    border-right: solid 100px transparent;
 }

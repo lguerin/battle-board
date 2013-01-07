@@ -16,19 +16,12 @@ exports.view = function(req, res) {
 	};
 	
 	// Render the response
-	var resultHandler = function(err, result) {
+	var resultHandler = function(err, result) {		
 		var battle = result[0];
 		// TODO : creer un SocketUtils
 		var io = app.get('io');
 		io.of('/' + battle.id).on('connection', function(socket) {
-			console.log('Client Connected');
-			socket.broadcast.emit('init_battle', battle);
 			socket.emit('init_battle', battle);
-
-			socket.on('message', function(data) {
-				socket.broadcast.emit('app_message', data);
-				socket.emit('app_message', data);
-			});
 			
 			socket.on('disconnect', function() {
 				console.log('Client Disconnected.');

@@ -6,7 +6,6 @@
 	<div class="row">
 		<div class="span12 score-border">
 			<img class="score-top" src="/img/battle-board-mini-1.png" alt="Battle Board" /><br />
-			
 			<div class="score-top">
 				<span>"{{division1.label}}" VS "{{division2.label}}"</span> 
 			</div>
@@ -33,13 +32,13 @@
 
 <script id="teamTpl" type="text/template">
 	<% _.each(teams, function(team){ %>
-		<li data-id="<%- team.score %><%- team._id %>">
+		<li data-id="<%- team.score %><%- team._id %>" class="<%- team.rank %>">
 
 	<div class="wrap">
 		<span class="vert-flag noise">
 			<strong><%- team.score %></strong>
 		</span>
-   		<img width="50" height="50" class="team-logo" src="/photos/<%- team.logo %>">
+   		<img class="team-logo" src="/photos/<%- team.logo %>">
 		<br clear="both" />
 		<span class="team-name"><%- team.name %></span>
 		<br clear="both" />
