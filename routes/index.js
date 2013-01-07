@@ -3,11 +3,9 @@
  */
 exports.index = function(req, res){
 	res.render('index', {
-		locals : {
-			title : 'Battle Board',
-			description : 'Battle de code - Tableau de bord'
+			title : 'Battle Board'
 		}
-	});
+	);
 };
 
 /**

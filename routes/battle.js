@@ -35,11 +35,15 @@ exports.view = function(req, res) {
 			});
 		});
 		
+		var divisions = _.values(battle.divisions).reverse();
+		
 	   	res.render(
 			'battle/view', {
 				title: battle.label,
 				battle: battle,
-				user: req.user
+				user: req.user,
+				division1: divisions[0],
+				division2: divisions[1]
     	});
 	   	
 	};

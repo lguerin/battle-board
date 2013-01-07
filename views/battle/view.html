@@ -1,23 +1,53 @@
-{{!< ../score-layout.html}}		
-<div class="scores">
-	<ul id="all" class="teams all"></ul>
-	<ul id="new" class="teams new"></ul>
-</div>
+{{!< ../layout-light.html}}
 
-{{#if user}}
-	<div class="form-actions">
-		<a class="btn btn-primary" href="/admin/battle/score/{{battle.id}}">Gérer les scores</a>&nbsp;
-		<a class="btn" href="/admin/battle/delete/{{battle.id}}">Supprimer</a>
+<body lang="fr">
+ 
+  <div class="container">
+	<div class="row">
+		<div class="span12 score-border">
+			<img class="score-top" src="/img/battle-board-mini-1.png" alt="Battle Board" /><br />
+			
+			<div class="score-top">
+				<span>"{{division1.label}}" VS "{{division2.label}}"</span> 
+			</div>
+			
+			<div class="scores">
+				<ul id="all" class="teams all"></ul>
+				<ul id="new" class="teams new"></ul>
+			</div>
+			
+			{{#if user}}
+				<div class="form-actions">
+					<a class="btn btn-primary" href="/admin/battle/score/{{battle.id}}">Gérer les scores</a>&nbsp;
+					<a class="btn" href="/admin/battle/delete/{{battle.id}}">Supprimer</a>
+				</div>
+			{{/if}}
+
+		</div>
 	</div>
-{{/if}}
+  </div>
+
+</body>
+
+{{> scripts}}
 
 <script id="teamTpl" type="text/template">
 	<% _.each(teams, function(team){ %>
-		<li data-id="<%- team.score %>">
-			<img width="50" class="team-logo" src="/photos/<%- team.logo %>" />	    				
-			<h5><%- team.name %></h5>
-			<span><%- team.score %></span>
+		<li data-id="<%- team.score %><%- team._id %>">
+
+	<div class="wrap">
+		<span class="vert-flag noise">
+			<strong><%- team.score %></strong>
+		</span>
+   		<img width="50" height="50" class="team-logo" src="/photos/<%- team.logo %>">
 		<br clear="both" />
+		<span class="team-name"><%- team.name %></span>
+		<br clear="both" />
+		<p>
+			<!-- List of players -->        	
+   		</p> 
+	</div>
+	</li>
  	<% }); %>
 </script>
 

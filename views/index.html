@@ -1,27 +1,41 @@
-{{!< home-layout.html}}
+{{!< layout-light.html}}
 
-<div class="row">
+<body lang="fr">
+ 
+  <div class="container">
+	<div class="row">
+		<div class="span8 offset2">
+		{{> menu}}
 
-	{{#if disconnect}}
-		<div class="alert alert-success">
-			Vous êtes à présent déconnecté.
-		</div>		
-	{{/if}}
-
-	<ul class="thumbnails accueil">
-		<li class="span8 offset1">
-			<div class="thumbnail">
-				<img src="/img/battle-board.png" alt="Battle Board logo" />
-				<hr />
-				<p class="text-info" align="center">
-					<em>
-						Aucune Battle en cours.<br />
-						Veuillez vous connecter pour initialiser une Battle.
-					</em>
-				</p>
+			<div class="row">
+			
+				{{#if disconnect}}
+					<div class="alert alert-success">
+						Vous êtes à présent déconnecté.
+					</div>		
+				{{/if}}
+			
+				<ul class="thumbnails accueil">
+					<li class="span8 offset1">
+						<div class="thumbnail">
+							<img src="/img/battle-board.png" alt="Battle Board logo" />
+							<hr />
+							<p class="text-info" align="center">
+								<em>
+									Aucune Battle en cours.<br />
+									Veuillez vous connecter pour initialiser une Battle.
+								</em>
+							</p>
+						</div>
+					</li>
+				</ul>
+				<br />
 			</div>
-		</li>
-	</ul>
-	<br />
 
-</div>
+		</div>
+	</div>
+  </div>
+
+</body>
+
+{{> scripts}}
