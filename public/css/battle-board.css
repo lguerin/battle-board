@@ -5159,11 +5159,15 @@ input[type="file"] {
   position: relative;
   margin: auto;
   text-align: center;
+  padding-top: 20px;
 }
 .score-top span {
   color: #e61329;
   font-size: 18px;
   font-family: BlueStone;
+}
+.score-logo {
+  float: right;
 }
 .score-border {
   margin-top: 20px;
@@ -5297,4 +5301,46 @@ strong {
 p {
   margin-top: 15px;
   text-align: justify;
+}
+.timer {
+  position: absolute;
+  margin-top: 15px;
+  font-size: 60px;
+  width: 1em;
+  height: 1em;
+  float: left;
+}
+.timer > .countdown {
+  position: absolute;
+  top: 1.05em;
+  left: 0;
+  width: 3.33em;
+  font-size: 0.3em;
+  text-align: center;
+}
+.timer > #slice {
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  clip: rect(0px, 1em, 1em, 0.5em);
+}
+.timer > #slice.gt50 {
+  clip: rect(auto, auto, auto, auto);
+}
+.timer > #slice > .pie {
+  border: 0.1em solid #c0c0c0;
+  position: absolute;
+  width: 0.8em;
+  height: 0.8em;
+  /* 1 - (2 * border width) */
+
+  clip: rect(0em, 0.5em, 1em, 0em);
+  border-radius: 0.5em;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+}
+.timer > #slice > .pie.fill {
+  transform: rotate(180deg) !important;
+  -moz-transform: rotate(180deg) !important;
+  -webkit-transform: rotate(180deg) !important;
 }

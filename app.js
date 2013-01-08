@@ -64,7 +64,6 @@ var server = http.createServer(app);
 
 // Setup Socket.IO
 var io = io.listen(server);
-io.enable('browser client etag');
 app.set('io', io);
 
 // Start application

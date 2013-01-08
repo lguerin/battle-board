@@ -3,12 +3,23 @@
 <body lang="fr">
  
   <div class="container">
+  <div class="span12>
 	<div class="row">
-		<div class="span12 score-border">
-			<img class="score-top" src="/img/battle-board-mini-1.png" alt="Battle Board" /><br />
-			<div class="score-top">
-				<span>"{{division1.label}}" VS "{{division2.label}}"</span> 
+	
+		<div class="span12 score-border ">
+			<div class="row">
+				<div class="span6">
+					<img class="score-logo" src="/img/battle-board-medium.png" alt="Battle Board" /><br />
+				</div>
+				<div class="span4">
+					<div class="timer"></div>			
+				</div>
+				<div class="span12 score-top">
+					<span>"{{division1.label}}" VS "{{division2.label}}"</span> 
+				</div>
 			</div>
+
+
 			
 			<div class="scores">
 				<ul id="all" class="teams all"></ul>
@@ -50,6 +61,16 @@
  	<% }); %>
 </script>
 
+<script id="timerTpl" type="text/template">
+	<div class="countdown"></div>
+	<div id="slice" <% if (countdown > half) { %> class="gt50" <% }  %>>
+	<div class="pie"></div>
+	<% if (countdown > half) { %> 
+		<div class="pie fill"></div> 
+	<% }  %>
+	</div>
+</script>
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="/libs/quicksand/jquery.easing.1.3.js"></script>
 <script src="/libs/quicksand/jquery-css-transform.js"></script>
@@ -61,5 +82,9 @@
 $(document).ready(function() {
 	var instance = new BattleBoard.Battle();
 	instance.init("{{battle.id}}");
+	
+	var countdown = new BattleBoard.Countdown();
+	// TODO : implementer gestion du temps restant coté serveur
+	countdown.init({{battle.duree}}, {{battle.duree}});
 });
 </script>
