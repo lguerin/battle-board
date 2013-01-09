@@ -2,7 +2,8 @@ var crypto = require('crypto'),
 	mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	ObjectId = Schema.ObjectId,
-	config = require('config');
+	config = require('config'),
+	_ = require('underscore');
 
 /**
 * Division Model
@@ -117,7 +118,11 @@ TeamSchema.statics.findByName = function(name, fn) {
 TeamSchema.statics.getTeamsByDivisionId = function(id, fn) {
 	this.find({division: id}, function(err, teams) {
 		if (err) return fn(err);
-		return fn(null, teams);
+    	var items = {};
+    	_.each(teams, function(team) {
+    		items[team._id] = team;
+		});
+		return fn(null, items);
 	}).populate('members');	
 };
 
@@ -167,11 +172,41 @@ var BattleSchema = new Schema({
 	'started': {type: Boolean, default: false}
 });
 
+BattleSchema.methods.updateScore = function(teamId, points, fn) {
+	var teams = {};
+	_.extend(teams, this.teams)
+	teams[teamId].score = parseInt(teams[teamId].score) + parseInt(points);
+	this.teams = teams;
+	this.markModified('teams');
+	var self = this;
+	this.save(function (err, self) {
+		return fn(err, self);
+	});
+};
+
 BattleSchema.statics.findById = function(id, fn) {
 	this.findOne({_id: id}, function(err, battle) {
         if (err) return fn(err);
         return fn(null, battle);
 	});
+};
+
+BattleSchema.statics.createBattle = function(division1, division2, duree, teams, fn) {
+	var battleKey = division1.key + "" + division2.key;
+	var battleLabel = division1.label + " VS " + division2.label;
+	var divisions = {};
+	divisions[division1._id] = division1;
+	divisions[division2._id] = division2;
+	
+	this.create({
+		key: battleKey,
+		label: battleLabel,
+		duree: duree,
+		teams: teams,
+		divisions: divisions
+	}, function(err){
+		return fn(err);
+	});	
 };
 
 // Export models
