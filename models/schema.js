@@ -3,7 +3,12 @@ var crypto = require('crypto'),
 	Schema = mongoose.Schema,
 	ObjectId = Schema.ObjectId,
 	config = require('config'),
-	_ = require('underscore');
+	_ = require('underscore'),
+	BattleUtils = require('../lib/battleutils').BattleUtils,
+	path = require('path'),
+	fs = require('fs'),
+	util = require('util'),
+	join = path.join;
 
 /**
 * Division Model
@@ -115,6 +120,13 @@ TeamSchema.statics.findByName = function(name, fn) {
 	});
 };
 
+TeamSchema.statics.findById = function(id, fn) {
+	this.findOne({_id: id}, function(err, team) {
+        if (err) return fn(err);
+        return fn(null, team);
+	}).populate('members');
+};
+
 TeamSchema.statics.getTeamsByDivisionId = function(id, fn) {
 	this.find({division: id}, function(err, teams) {
 		if (err) return fn(err);
@@ -124,6 +136,58 @@ TeamSchema.statics.getTeamsByDivisionId = function(id, fn) {
 		});
 		return fn(null, items);
 	}).populate('members');	
+};
+
+TeamSchema.methods.update = function(name, divisionId, img, players, fn) {
+	this.name = name;
+	this.division = divisionId;
+	this.members = players;
+	var self = this;
+	if (img.name) {
+		var source = img.path,
+			dir = app.get('photos'),
+			logo = BattleUtils.slug(img.name) || 'default.png',
+			dest = join(dir, logo),
+			is = fs.createReadStream(source),
+			os = fs.createWriteStream(dest);
+		this.logo = logo;
+		util.pump(is, os, function(err) {
+			if (err) return next(err);
+			fs.unlinkSync(source);
+			self.save(function (err, self) {
+				return fn(err, self);
+			});
+		});
+	}
+	else {
+		this.save(function (err, self) {
+			return fn(err, self);
+		});
+	}
+};
+
+TeamSchema.statics.createTeam = function(name, divisionId, img, players, fn) {
+	var source = img.path,
+		dir = app.get('photos'),
+		logo = BattleUtils.slug(img.name) || 'default.png',
+		dest = join(dir, logo),
+		is = fs.createReadStream(source),
+		os = fs.createWriteStream(dest);
+	
+	var self = this;
+	util.pump(is, os, function(err) {
+		if (err) return next(err);
+		fs.unlinkSync(source);
+		
+		self.create({
+			name: name,
+			division: divisionId,
+			logo: logo,
+			members: players
+		}, function(err){
+			return fn(err);
+		});	
+	});
 };
 
 /**
@@ -147,6 +211,13 @@ PlayerSchema.statics.findById = function(id, fn) {
 	this.findOne({_id: id}, function(err, player) {
         if (err) return fn(err);
         return fn(null, player);
+	});
+};
+
+PlayerSchema.statics.getPlayersByDivisionId = function(divisionId, fn) {
+	this.find({division: divisionId}, function(err, players) {
+        if (err) return fn(err);
+        return fn(null, players);
 	});
 };
 

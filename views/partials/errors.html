@@ -1,0 +1,10 @@
+{{#if errors}}
+	<ul class="alert alert-error">
+	Merci de corriger les erreurs suivantes :
+		{{#each errors}}
+		<li>
+			{{this.msg}}
+		</li>
+		{{/each}}
+	</ul>		
+{{/if}}

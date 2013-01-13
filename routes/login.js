@@ -18,7 +18,6 @@ exports.submit = function(req, res, next) {
 			res.redirect('/');
 	    }
 	    else {
-	    	console.log("ici: " + reason);
 			res.locals.error = reason;
 			exports.form(req, res);
 	    }

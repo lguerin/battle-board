@@ -1,18 +1,16 @@
 <div class="form-horizontal">
-	<form action="edit" method="post" enctype="multipart/form-data">
+	<form id="team-form" method="post" enctype="multipart/form-data">
 		<div class="control-group">
 			<label class="control-label" for="name"> Nom de l'équipe :</label>
 			<div class="controls">
-				<input type="text" name="name" />
+				<input type="text" name="name" value="{{current.name}}" required />
 			</div>
 			<br />
 			
 			<label class="control-label" for="division"> Division :</label>
 			<div class="controls">
-				<select id="division" name="division">
-					{{#each divisions}}
-  						<option value="{{_id}}">{{label}}</option>
-  					{{/each}}
+				<select id="division" name="division" onchange="BattleBoard.Util.loadSelectPlayers('division', 'playersTpl', 'players');">
+					{{renderSelectOptions divisions current.division}}
             	</select>
 			</div>
 			<br />
@@ -25,18 +23,34 @@
 			</div>
 			
 			<h3>Membres de l'équipe</h3>
-			
+			<div id="players"></div>
 			{{#each players}}
 				 <label class="checkbox">
 					<input type="checkbox" name="members" value="{{_id}}"> {{name}}  
 				 </label>
 			{{/each}}	 
-
+			
 			<br />
 			<div class="form-actions">
 				<input type="submit" class="btn btn-primary" value="Enregistrer" />
-	            <a href="#" class="btn delete">Supprimer</a>
+	            <a href="#confirm" class="btn" data-toggle="modal">Supprimer</a>
 	        </div>			
 		</div>		
 	</form>
 </div>
+
+{{renderConfirmBox "confirm"}}
+
+<script id="playersTpl" type="text/template">
+	<% _.each(players, function(player){ %>		
+		<label class="checkbox">
+			<input type="checkbox" name="members" value="<%- player._id %>" <% if (player.checked) { %> checked <% } %>> <%- player.name %>  
+		</label>
+	<% }); %>
+</script>
+
+<script>
+$(document).ready(function() {
+	BattleBoard.Util.loadSelectPlayers("division", "playersTpl", "players", "{{members}}");
+});
+</script>

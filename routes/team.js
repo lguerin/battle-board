@@ -1,11 +1,6 @@
 var Team = require('../models/schema').Team,
 	Division = require('../models/schema').Division,
 	Player = require('../models/schema').Player,
-	BattleUtils = require('../lib/battleutils').BattleUtils,
-	path = require('path'),
-	fs = require('fs'),
-	join = path.join,
-	util = require('util'),
 	async = require('async'),
 	_ = require('underscore');
 
@@ -23,6 +18,7 @@ exports.list = function(req, res) {
 };
 
 exports.form = function(req, res) {
+	var teamId = req.params.id;
 	
 	// List of divisions
 	var getDivision = function(callback) {
@@ -32,60 +28,86 @@ exports.form = function(req, res) {
 	    });		
 	};
 	
-	// List of players
+	// List of team players
 	var getPlayers = function(callback) {
-		Player.listAll(function(err, players) {
-			if (err) return next(err);
+		var players = [];
+		if (teamId) {
+			
+			Team.findById(teamId, function(err, team) {
+				if (err) return next(err);
+				players = team.members;
+				callback(null, players);
+			});
+		}
+		else {
 			callback(null, players);
-		});
+		}
+	};
+
+	var currentTeam = function(callback) {
+		if (teamId) {
+			Team.findById(teamId, function(err, team) {
+				if (err) return next(err);
+				callback(null, team);
+			});
+		}
+		else {
+			callback(null, null);
+		}
 	};
 	
 	// Render the response
 	var resultHandler = function(err, result) {
+		var current = result[2];
+		var members = [];
+		if (current) {
+			members = _.pluck(current.members, '_id');
+		}
 		res.render(
 				'admin/team/edit', {
-					title: "Ajout d'une équipe",
+					title: "Profil de l'équipe",
 					divisions: result[0],
-					players: result[1],
+					currentPlayers: result[1],
+					current: current,
+					members: members
 			});
 	};
 	
-	async.parallel([getDivision, getPlayers], resultHandler);
+	async.series([getDivision, getPlayers, currentTeam], resultHandler);
 };
 
 exports.submit = function(dir) {
-	var players = [];
 	return function(req, res, next) {
 		var img = req.files.logo,
 			name = req.body.name,
 			division = req.body.division, 
-			source = img.path,
-			logo = BattleUtils.slug(img.name),
-			dest = join(dir, logo),
 			members = req.body.members;
 		
-		var is = fs.createReadStream(source);
-		var os = fs.createWriteStream(dest);
-
+		// Validate form
+		req.assert('members', "Vous devez sélectionner au moins un joueur.").notNull();
+		var errors = req.validationErrors();
+		if (errors) {
+			res.locals.errors = errors;
+			exports.form(req, res);
+			return;
+		}
 		
-		if (members && !_.isArray(members))
-			players.push(members);
-		else
-			players = members;
-		
-		util.pump(is, os, function(err) {
-			if (err) return next(err);
-			fs.unlinkSync(source);
-			var team = new Team({
-				name: name,
-				division: division,
-				logo: logo,
-				members: players
+		var teamId = req.params.id;
+		var players = _.union([], members);
+		if (teamId) {
+			Team.findById(teamId, function(err, team) {
+				if (err) return next(err);
+				team.update(name, division, img, players, function(err) {
+					if (err) return next(err);
+					res.redirect('admin/team');
+				});
 			});
-			team.save(function(err){
+		}
+		else {
+			Team.createTeam(name, division, img, players, function(err) {
 				if (err) return next(err);
 				res.redirect('admin/team');
 			});
-		});
+		}
 	};
 };

@@ -14,7 +14,8 @@
     	"config": "0.4.18",
     	"socket.io": "0.9.10",
     	"underscore": "1.4.3",
-    	"async": "0.1.22"
+    	"async": "0.1.22",
+    	"express-validator": "0.3.1"
   	},
 	"devDependencies": {
 		"supervisor": ">= 0.4.1",

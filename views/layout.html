@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <title>{{title}}</title>
   <link rel="stylesheet" type="text/css" href="/css/battle-board.css" />
-  <script src="/libs/jquery/jquery-1.8.3.min.js"></script>
+  <script src="/libs/jquery/jquery-1.8.3.min.js"></script>  
 </head>
 
 <body lang="fr">
@@ -16,14 +16,10 @@
 		{{> menu}}
 	</div>
 	
-	<!-- 
-		<div class="mini-layout"> 
-		</div>
-	-->
-
 	<br />	
 	<fieldset>
 		<legend>{{title}}</legend>
+		{{> errors}}
 		<div class="row-fluid">
 			{{{body}}}
 		</div>

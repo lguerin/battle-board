@@ -2,6 +2,28 @@ if(!BattleBoard){
 	var BattleBoard = {};
 }
 
+BattleBoard.Util = {};
+
+BattleBoard.Util.loadSelectPlayers = function(selectId, tplId, targetId, selected) {
+	var divisionId = $('#' + selectId).val();
+	var selected = selected.split(',');
+	$.ajax({
+		url : '/api/players/' + divisionId,
+		type : 'POST',
+		success : function(data) {
+			var tpl = $('#' + tplId).html();
+			_.each(data.players, function(player) {
+				if (_.indexOf(_.union([], selected), player._id) != -1)
+					player.checked = true;
+			});
+			$('#' + targetId).html(_.template(tpl, data));
+		},
+		error : function(jqXHR, textStatus, err) {
+			alert('text status ' + textStatus + ', err ' + err);
+		}
+	});
+};
+
 BattleBoard.Battle = function() {
 	this.id = null; 
 	this.socket = null;
