@@ -268,7 +268,6 @@ BattleSchema.statics.isValid = function(division1, division2, fn) {
 	this.findOne({key: battleKey}, function(err, battle) {
         if (err) return fn(err);
         if (battle) {
-        	console.log("here")
         	return fn(null, battle, "Cette battle est déjà en cours !");
         }
         return fn(null, null, null);

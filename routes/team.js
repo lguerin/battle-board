@@ -89,7 +89,6 @@ exports.submit = function() {
 		req.assert('members', "Vous devez sélectionner au moins un joueur.").notNull();
 		var errors = req.validationErrors();
 		if (errors) {
-			console.log(errors)
 			res.locals.errors = errors;
 			exports.form(req, res);
 			return;
