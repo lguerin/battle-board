@@ -5,15 +5,15 @@ if(!BattleBoard){
 BattleBoard.Util = {};
 
 BattleBoard.Util.loadSelectPlayers = function(selectId, tplId, targetId, selected) {
-	var divisionId = $('#' + selectId).val();
-	var selected = selected.split(',');
+	var divisionId = $('#' + selectId).val();	
+	var selected = (selected && selected.split(',')) || [];
 	$.ajax({
 		url : '/api/players/' + divisionId,
 		type : 'POST',
 		success : function(data) {
 			var tpl = $('#' + tplId).html();
 			_.each(data.players, function(player) {
-				if (_.indexOf(_.union([], selected), player._id) != -1)
+				if (_.indexOf(selected, player._id) != -1)
 					player.checked = true;
 			});
 			$('#' + targetId).html(_.template(tpl, data));
@@ -22,6 +22,14 @@ BattleBoard.Util.loadSelectPlayers = function(selectId, tplId, targetId, selecte
 			alert('text status ' + textStatus + ', err ' + err);
 		}
 	});
+};
+
+BattleBoard.Util.confirmModalBox = function(id, linkId) {
+	var target = $('#' + linkId).data('url');
+	// Dismiss the dialog
+	$("#" + id).modal('hide');
+	// Redirect
+	window.location = target;
 };
 
 BattleBoard.Battle = function() {
@@ -43,7 +51,9 @@ BattleBoard.Battle.prototype.sortByScoreDesc = function(list) {
 	teams = _.sortBy(teams, 'score').reverse();
 	teams[0].rank = 'first';
 	teams[1].rank = 'second';
-	teams[2].rank = 'third';
+	if (teams.length > 2) {
+		teams[2].rank = 'third';
+	}
 	return teams;
 };
 

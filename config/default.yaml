@@ -6,3 +6,6 @@ db:
 auth:
   salt: "batte!98(-qsd#"
   default_admin_pass: "battle!2013"
+score:
+  min: "-10"
+  max: 30

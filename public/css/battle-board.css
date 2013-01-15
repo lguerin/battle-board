@@ -5136,12 +5136,19 @@ a.badge:hover {
 .team-logo {
   position: relative;
   float: right;
+  width: 50px;
 }
 .accueil hr {
   margin: 20px;
 }
 .row {
   margin-left: 0;
+}
+.nav,
+.battle-list,
+li.battle-list {
+  margin-left: 20px;
+  margin-right: 20px;
 }
 input[type="file"] {
   height: 23px;
@@ -5201,6 +5208,9 @@ input[type="file"] {
   width: 450px;
   float: right;
   text-align: left;
+}
+.modal-body {
+  text-align: center;
 }
 strong {
   font-size: 25px;

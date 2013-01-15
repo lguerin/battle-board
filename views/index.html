@@ -21,10 +21,24 @@
 							<img src="/img/battle-board.png" alt="Battle Board logo" />
 							<hr />
 							<p class="text-info" align="center">
-								<em>
-									Aucune Battle en cours.<br />
-									Veuillez vous connecter pour initialiser une Battle.
-								</em>
+								{{#if battles}}
+									<ul class="nav nav-tabs">
+										<li class="active">
+											<a href="#">Battles en cours</a>
+										</li>
+									</ul>
+									
+									<ul>
+										{{#each battles}}
+											<li class="battle-list"><a href="/battle/{{_id}}">{{label}}</a></li>
+										{{/each}}
+									</ul>
+								{{else}}
+									<em class="battle-list">
+										Aucune Battle en cours.
+										Veuillez vous connecter pour initialiser une Battle.
+									</em>
+								{{/if}}
 							</p>
 						</div>
 					</li>

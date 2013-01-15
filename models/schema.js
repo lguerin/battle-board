@@ -262,6 +262,19 @@ BattleSchema.statics.findById = function(id, fn) {
 	});
 };
 
+BattleSchema.statics.isValid = function(division1, division2, fn) {
+	var battleKey = division1.key + "" + division2.key;
+	// TODO : tester 'started' et 'done'
+	this.findOne({key: battleKey}, function(err, battle) {
+        if (err) return fn(err);
+        if (battle) {
+        	console.log("here")
+        	return fn(null, battle, "Cette battle est déjà en cours !");
+        }
+        return fn(null, null, null);
+	});
+};
+
 BattleSchema.statics.createBattle = function(division1, division2, duree, teams, fn) {
 	var battleKey = division1.key + "" + division2.key;
 	var battleLabel = division1.label + " VS " + division2.label;
@@ -274,9 +287,17 @@ BattleSchema.statics.createBattle = function(division1, division2, duree, teams,
 		label: battleLabel,
 		duree: duree,
 		teams: teams,
-		divisions: divisions
+		divisions: divisions,
+		started: true
 	}, function(err){
 		return fn(err);
+	});	
+};
+
+BattleSchema.statics.findBattlesInProgress = function(fn) {
+	this.find({started: true, done: false}, function(err, battles) {
+		if (err) return fn(err);
+		return fn(null, battles);
 	});	
 };
 

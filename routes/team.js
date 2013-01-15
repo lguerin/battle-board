@@ -1,6 +1,7 @@
 var Team = require('../models/schema').Team,
 	Division = require('../models/schema').Division,
 	Player = require('../models/schema').Player,
+	Battle = require('../models/schema').Battle,
 	async = require('async'),
 	_ = require('underscore');
 
@@ -69,14 +70,15 @@ exports.form = function(req, res) {
 					divisions: result[0],
 					currentPlayers: result[1],
 					current: current,
-					members: members
+					members: members,
+					logo: (current && current.logo) || 'default.png'
 			});
 	};
 	
 	async.series([getDivision, getPlayers, currentTeam], resultHandler);
 };
 
-exports.submit = function(dir) {
+exports.submit = function() {
 	return function(req, res, next) {
 		var img = req.files.logo,
 			name = req.body.name,
@@ -87,6 +89,7 @@ exports.submit = function(dir) {
 		req.assert('members', "Vous devez sélectionner au moins un joueur.").notNull();
 		var errors = req.validationErrors();
 		if (errors) {
+			console.log(errors)
 			res.locals.errors = errors;
 			exports.form(req, res);
 			return;
@@ -110,4 +113,19 @@ exports.submit = function(dir) {
 			});
 		}
 	};
+};
+
+exports.remove = function(req, res) {
+	var id = req.params.id;
+
+	// TODO : verifier si pas de battle en cours
+	
+	Team.findById(id, function(err, team) {
+		if (err) return next(err);
+		team.remove(function (err, team) {
+			if(err) return next(err);
+			console.log(">> Team %s deleted!", id);
+			res.redirect('admin/team');
+		});
+	});
 };

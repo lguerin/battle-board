@@ -1,7 +1,9 @@
 var Division = require('../models/schema').Division,
 	Team = require('../models/schema').Team,
 	Battle = require('../models/schema').Battle,
+	BattleUtils = require('../lib/battleutils').BattleUtils,
 	async = require('async'),
+	config = require('config'),
 	_ = require('underscore');
 
 exports.view = function(req, res) {
@@ -20,25 +22,29 @@ exports.view = function(req, res) {
 		var battle = result[0];
 		// TODO : creer un SocketUtils
 		var io = app.get('io');
-		io.of('/' + battle.id).on('connection', function(socket) {
-			socket.emit('init_battle', battle);
-			
-			socket.on('disconnect', function() {
-				console.log('Client Disconnected.');
+		if (battle) {
+			io.of('/' + battle.id).on('connection', function(socket) {
+				socket.emit('init_battle', battle);
+				
+				socket.on('disconnect', function() {
+					console.log('Client Disconnected.');
+				});
 			});
-		});
-		
-		var divisions = _.values(battle.divisions).reverse();
-		
-	   	res.render(
-			'battle/view', {
-				title: battle.label,
-				battle: battle,
-				user: req.user,
-				division1: divisions[0],
-				division2: divisions[1]
-    	});
-	   	
+			
+			var divisions = _.values(battle.divisions).reverse();
+			
+		   	res.render(
+				'battle/view', {
+					title: battle.label,
+					battle: battle,
+					user: req.user,
+					division1: divisions[0],
+					division2: divisions[1]
+	    	});
+		}
+		else {
+			res.redirect('/admin/team');
+		}
 	};
 	
 	async.parallel([getBattle], resultHandler);
@@ -47,6 +53,9 @@ exports.view = function(req, res) {
 exports.list = function(req, res) {
 	Battle.find({}, function(err, battles) {
 		if (err) return next(err);
+		for (var i = 0; i < battles.length; i++) {
+			_.extend(battles[i], {date: BattleUtils.formattedDate(battles[i].created)});
+		}
 		res.render(
 			'admin/battle/list', {
 				title: "Liste des Battles",
@@ -56,7 +65,6 @@ exports.list = function(req, res) {
 };
 
 exports.form = function(req, res) {
-	
 	// List of divisions
 	var getDivisions = function(callback) {
 	    Division.listAll(function(err, items) {		
@@ -80,45 +88,63 @@ exports.form = function(req, res) {
 };
 
 exports.submit = function(req, res, next) {
-		var getDivision1 = function(callback) {
-		    Division.findById(req.body.division1, function(err, division) {	
-		    	if (err) return next(err);
-		    	callback(null, division);
-		    });		
-		};
+	var getDivision1 = function(callback) {
+	    Division.findById(req.body.division1, function(err, division) {	
+	    	if (err) return next(err);
+	    	callback(null, division);
+	    });		
+	};
+	
+	var getDivision2 = function(callback) {
+	    Division.findById(req.body.division2, function(err, division) {	
+	    	if (err) return next(err);
+	    	callback(null, division);
+	    });		
+	};		
+	
+	var getTeamsDivision1 = function(callback) {
+		Team.getTeamsByDivisionId(req.body.division1, function(err, teams) {	
+	    	if (err) return next(err);
+	    	callback(null, teams);
+	    });		
+	};
+	
+	var getTeamsDivision2 = function(callback) {
+		Team.getTeamsByDivisionId(req.body.division2, function(err, teams) {	
+	    	if (err) return next(err);
+	    	callback(null, teams);
+	    });		
+	};		
+	
+	// Render the response
+	var resultHandler = function(err, result) {
 		
-		var getDivision2 = function(callback) {
-		    Division.findById(req.body.division2, function(err, division) {	
-		    	if (err) return next(err);
-		    	callback(null, division);
-		    });		
-		};		
+		// Validation
+		var teams = _.extend(result[2], result[3]);
+		if (_.keys(teams).length < 2) {
+			var errors = [].concat({msg: "Vous devez avoir au minimum deux équipes pour initialiser une Battle."});
+			res.locals.errors = errors;
+			exports.form(req, res);
+			return;
+		}
 		
-		var getTeamsDivision1 = function(callback) {
-			Team.getTeamsByDivisionId(req.body.division1, function(err, teams) {	
-		    	if (err) return next(err);
-		    	callback(null, teams);
-		    });		
-		};
-		
-		var getTeamsDivision2 = function(callback) {
-			Team.getTeamsByDivisionId(req.body.division2, function(err, teams) {	
-		    	if (err) return next(err);
-		    	callback(null, teams);
-		    });		
-		};		
-		
-		// Render the response
-		var resultHandler = function(err, result) {
-			// TODO : BatteBuilder
-			Battle.createBattle(result[0], result[1], req.body.duree, _.extend(result[2], result[3]), function() {
-				if (err) return next(err);
-				res.redirect('admin/battle');
-			});
-		};
-		
-		async.parallel([getDivision1, getDivision2, getTeamsDivision1, getTeamsDivision2], 
-				resultHandler);
+		Battle.isValid(result[0], result[1], function(err, battle, reason) {
+			if (err) return next(err);
+			if (battle) {
+				res.locals.errors = [].concat({msg: reason});
+				exports.form(req, res);
+			}
+			else {
+				Battle.createBattle(result[0], result[1], req.body.duree, teams, function() {
+					if (err) return next(err);
+					res.redirect('admin/battle');
+				});
+			}
+		});
+	};
+	
+	async.parallel([getDivision1, getDivision2, getTeamsDivision1, getTeamsDivision2], 
+			resultHandler);
 };
 
 exports.remove = function(req, res) {
@@ -152,9 +178,22 @@ exports.score = function(req, res) {
 
 exports.updateBattle = function(req, res, next) {
 	var id = req.params.id;
-	var teamId = req.body.team;
-	var points = req.body.score;
+	var teamId = req.body.team;	
 	
+	// Validate form
+	req.assert('score', "Vous devez saisir un nombre entre " + config.score.min + " et " + config.score.max + ".")
+		.notNull()
+			.isInt()
+				.min(config.score.min)
+					.max(config.score.max);
+	var errors = req.validationErrors();
+	if (errors) {
+		res.locals.errors = errors;
+		exports.score(req, res);
+		return;
+	}
+	
+	var points = req.body.score;
 	Battle.findById(id, function(err, battle) {
 		if (err) return next(err);
 		if (battle) {

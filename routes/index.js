@@ -1,11 +1,13 @@
-/**
- * GET home page.
- */
+var Battle = require('../models/schema').Battle;
+
 exports.index = function(req, res){
-	res.render('index', {
-			title : 'Battle Board'
-		}
-	);
+	Battle.findBattlesInProgress(function(err, battles) {
+		if (err) return next(err);
+		res.render('index', {
+			title: 'Battle Board',
+			battles: battles 
+		});
+	});
 };
 
 /**

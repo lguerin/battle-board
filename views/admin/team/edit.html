@@ -1,4 +1,5 @@
 <div class="form-horizontal">
+	<img alt="Team logo" class="team-logo" src="/photos/{{logo}}">
 	<form id="team-form" method="post" enctype="multipart/form-data">
 		<div class="control-group">
 			<label class="control-label" for="name"> Nom de l'équipe :</label>
@@ -9,7 +10,7 @@
 			
 			<label class="control-label" for="division"> Division :</label>
 			<div class="controls">
-				<select id="division" name="division" onchange="BattleBoard.Util.loadSelectPlayers('division', 'playersTpl', 'players');">
+				<select id="division" name="division" onchange="BattleBoard.Util.loadSelectPlayers('division', 'playersTpl', 'players', '{{members}}');">
 					{{renderSelectOptions divisions current.division}}
             	</select>
 			</div>
@@ -33,13 +34,13 @@
 			<br />
 			<div class="form-actions">
 				<input type="submit" class="btn btn-primary" value="Enregistrer" />
-	            <a href="#confirm" class="btn" data-toggle="modal">Supprimer</a>
+	            <a href="#" id="delete" data-url="/admin/team/delete/{{current._id}}" class="btn" data-toggle="modal" data-target="#confirm">Supprimer</a>
 	        </div>			
 		</div>		
 	</form>
 </div>
 
-{{renderConfirmBox "confirm"}}
+{{renderConfirmBox "confirm" "delete"}}
 
 <script id="playersTpl" type="text/template">
 	<% _.each(players, function(player){ %>		
@@ -51,6 +52,7 @@
 
 <script>
 $(document).ready(function() {
+	// Load players by division
 	BattleBoard.Util.loadSelectPlayers("division", "playersTpl", "players", "{{members}}");
 });
 </script>

@@ -54,7 +54,7 @@ app.configure(function() {
 	app.use(express.static(__dirname + '/public'));
 	app.use(app.router);
 	app.use(routes.notFound);
-	app.use(routes.error);	
+	app.use(routes.error);
 	if ('development' == env) {
 		app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 		// DataLoader.populateDevBase();
@@ -96,8 +96,9 @@ app.get('/admin/*', security.authenticated);
 app.get('/admin/team', team.list);
 app.get('/admin/team/add', team.form);
 app.get('/admin/team/edit/:id', team.form);
-app.post('/admin/team/edit/:id', team.submit(app.get('photos')));
-app.post('/admin/team/add', team.submit(app.get('photos')));
+app.post('/admin/team/edit/:id', team.submit());
+app.post('/admin/team/add', team.submit());
+app.get('/admin/team/delete/:id', team.remove);
 
 app.get('/admin/player', player.list);
 app.get('/admin/player/edit', player.form);
