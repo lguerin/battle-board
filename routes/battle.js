@@ -4,7 +4,8 @@ var Division = require('../models/schema').Division,
 	BattleUtils = require('../lib/battleutils').BattleUtils,
 	async = require('async'),
 	config = require('config'),
-	_ = require('underscore');
+	_ = require('underscore'),
+	BattleTimeManager = require('../lib/timemanager').BattleTimeManager;
 
 exports.view = function(req, res) {
 	var id = req.params.id;
@@ -135,8 +136,9 @@ exports.submit = function(req, res, next) {
 				exports.form(req, res);
 			}
 			else {
-				Battle.createBattle(result[0], result[1], req.body.duree, teams, function() {
+				Battle.createBattle(result[0], result[1], req.body.duree, teams, function(err, item) {
 					if (err) return next(err);
+					BattleTimeManager.register(item.id);
 					res.redirect('admin/battle');
 				});
 			}

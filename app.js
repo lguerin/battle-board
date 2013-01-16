@@ -17,7 +17,8 @@ var express = require('express'),
 	session = require('./lib/middleware/session'),
 	security = require('./lib/middleware/security'),
 	expressValidator = require('express-validator'),
-	hbsBattleHelper = require('./lib/hbs/helpers');
+	hbsBattleHelper = require('./lib/hbs/helpers'),
+	BattleTimeManager = require('./lib/timemanager').BattleTimeManager;
 
 // Setup local variables
 var port = (process.env.PORT || config.app.port);
@@ -75,6 +76,9 @@ server.listen(port, function () {
 	console.log('Battle Board started - Listening on port: ' + port);
 });
 
+// Start BattleTimeManager
+BattleTimeManager.start();
+
 ///////////////////////////////////////////
 //              Routes                   //
 ///////////////////////////////////////////
@@ -101,9 +105,10 @@ app.post('/admin/team/add', team.submit());
 app.get('/admin/team/delete/:id', team.remove);
 
 app.get('/admin/player', player.list);
-app.get('/admin/player/edit', player.form);
+app.get('/admin/player/add', player.form);
 app.get('/admin/player/edit/:id', player.form);
-app.post('/admin/player/edit', player.submit(app.get('photos')));
+app.post('/admin/player/add', player.submit(app.get('photos')));
+app.get('/admin/player/delete/:id', player.remove);
 
 app.get('/admin/battle/add', battle.form);
 app.post('/admin/battle/add', battle.submit);

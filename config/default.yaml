@@ -9,3 +9,5 @@ auth:
 score:
   min: "-10"
   max: 30
+battle:
+  refresh_period: 60

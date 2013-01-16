@@ -82,7 +82,6 @@ $(document).ready(function() {
 	instance.init("{{battle.id}}");
 	
 	var countdown = new BattleBoard.Countdown();
-	// TODO : implementer gestion du temps restant coté serveur
-	countdown.init({{battle.duree}}, {{battle.duree}});
+	countdown.init({{battle.countdown}}, {{battle.duree}});
 });
 </script>

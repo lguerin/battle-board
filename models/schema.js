@@ -147,8 +147,10 @@ TeamSchema.methods.update = function(name, divisionId, img, players, fn) {
 		var source = img.path,
 			dir = app.get('photos'),
 			logo = BattleUtils.slug(img.name) || 'default.png',
-			dest = join(dir, logo),
-			is = fs.createReadStream(source),
+			dest = join(dir, logo);
+		if (logo == 'default.png')
+			source = dest;
+		var	is = fs.createReadStream(source),
 			os = fs.createWriteStream(dest);
 		this.logo = logo;
 		util.pump(is, os, function(err) {
@@ -170,8 +172,10 @@ TeamSchema.statics.createTeam = function(name, divisionId, img, players, fn) {
 	var source = img.path,
 		dir = app.get('photos'),
 		logo = BattleUtils.slug(img.name) || 'default.png',
-		dest = join(dir, logo),
-		is = fs.createReadStream(source),
+		dest = join(dir, logo);
+	if (logo == 'default.png')
+		source = dest;
+	var	is = fs.createReadStream(source),
 		os = fs.createWriteStream(dest);
 	
 	var self = this;
@@ -237,6 +241,7 @@ var BattleSchema = new Schema({
 	'created': { type: Date, default: Date.now},
 	'label': String,
 	'duree': {type: Number, min: 0, max: 120}, 
+	'countdown': Number, 
 	'teams': Schema.Types.Mixed,
 	'divisions': Schema.Types.Mixed,
 	'done': {type: Boolean, default: false},
@@ -285,11 +290,12 @@ BattleSchema.statics.createBattle = function(division1, division2, duree, teams,
 		key: battleKey,
 		label: battleLabel,
 		duree: duree,
+		countdown: duree,
 		teams: teams,
 		divisions: divisions,
 		started: true
-	}, function(err){
-		return fn(err);
+	}, function(err, battle){
+		return fn(err, battle);
 	});	
 };
 

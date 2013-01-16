@@ -1,9 +1,9 @@
 <div class="form-horizontal">
-	<form action="edit" method="post" enctype="multipart/form-data">
+	<form method="post" enctype="multipart/form-data">
 		<div class="control-group">
 			<label class="control-label" for="name"> Nom :</label>
 			<div class="controls">
-				<input type="text" name="name" value="{{player.name}}"/>
+				<input type="text" name="name" value="{{player.name}}" required />
 			</div>
 			<br />
 			
@@ -27,7 +27,10 @@
 			<br />
 			<div class="form-actions">
 				<input type="submit" class="btn btn-primary" value="Enregistrer" />
+				<a href="#" id="delete" data-url="/admin/player/delete/{{player._id}}" class="btn" data-toggle="modal" data-target="#confirm">Supprimer</a>
 	        </div>			
 		</div>		
 	</form>
+	
+	{{renderConfirmBox "confirm" "delete"}}
 </div>

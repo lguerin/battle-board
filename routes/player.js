@@ -63,7 +63,7 @@ exports.submit = function(dir) {
 			name = req.body.name,
 			division = req.body.division, 
 			source = img.path,
-			photo = BattleUtils.slug(img.name),
+			photo = BattleUtils.slug(img.name) || 'default.png',
 			dest = join(dir, photo);
 		
 		var is = fs.createReadStream(source);
@@ -83,4 +83,13 @@ exports.submit = function(dir) {
 			});
 		});
 	};
+};
+
+exports.remove = function(req, res) {
+	var id = req.params.id;
+	Player.findByIdAndRemove(id, function(err) {
+		if (err) return next(err);
+		console.log(">> Player %s deleted!", id);
+		res.redirect('admin/player');
+	});
 };
