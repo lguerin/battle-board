@@ -35,6 +35,11 @@ BattleBoard.Util.confirmModalBox = function(id, linkId) {
 BattleBoard.Battle = function() {
 	this.id = null; 
 	this.socket = null;
+	this.sounds = {
+			'up': '../sound/up',
+			'down': '../sound/down',
+			'alarm': '../sound/alarm',
+	};
 };
 
 BattleBoard.Battle.prototype.getBattleNamespace = function() {
@@ -64,10 +69,11 @@ BattleBoard.Battle.prototype.prepareData = function(data) {
 	$('#all').html(_.template(tpl, data));
 };
 
-BattleBoard.Battle.prototype.refreshScores = function(data) {
+BattleBoard.Battle.prototype.refreshScores = function(data, score) {
 	var teams = this.sortByScoreDesc(data.teams);
 	var data = {teams:teams};
 	var tpl = $("#teamTpl").html();
+	var self = this;
 	$('#new').html(_.template(tpl, data));
 	$('.all').quicksand($('.new li'), {
 		duration: 800,
@@ -75,18 +81,38 @@ BattleBoard.Battle.prototype.refreshScores = function(data) {
 		retainExisting: false,
 		easing: 'easeInOutQuad',
 		useScaling: true
+	}, function() {
+		self.playScoreSound(score);
 	});
+};
+
+BattleBoard.Battle.prototype.playScoreSound = function(score) {
+	var sound = score > 0 ? 'up' : 'down';
+	var gameSound = new buzz.sound(this.sounds[sound]);
+	gameSound.play();
+};
+
+BattleBoard.Battle.prototype.playAlarm = function() {
+	var gameSound = new buzz.sound(this.sounds['alarm']);
+	gameSound.play();
 };
 
 BattleBoard.Battle.prototype._initBattle = function() {
 	var self = this;
+	buzz.defaults.formats = [ 'ogg', 'mp3' ];
+	buzz.defaults.preload = 'metadata';
+	
 	if (this.socket) {
 		this.socket.on('init_battle', function(data) {
 			self.prepareData(data);
 		});
 		
-		this.socket.on('refresh_scores', function(data) {
-			self.refreshScores(data);			
+		this.socket.on('refresh_scores', function(data, score) {
+			self.refreshScores(data, score);			
+		});
+		
+		this.socket.on('alarm', function() {
+			self.playAlarm();			
 		});
 	}	
 };

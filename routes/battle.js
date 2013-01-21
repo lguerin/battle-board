@@ -204,7 +204,7 @@ exports.updateBattle = function(req, res, next) {
 				console.log(">> Battle %s updated!", id);
 				// TODO : creer un SocketUtils
 				var io = app.get('io');
-				io.of('/' + battle.id).emit('refresh_scores', battle);
+				io.of('/' + battle.id).emit('refresh_scores', battle, points);
 				var list = _.sortBy(battle.teams, 'name');
 				res.render(
 						'admin/battle/score', {
