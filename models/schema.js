@@ -144,23 +144,15 @@ TeamSchema.methods.update = function(name, divisionId, img, players, fn) {
 	this.members = players;
 	var self = this;
 	if (img.name) {
-		var source = img.path,
-			dir = app.get('photos'),
-			logo = BattleUtils.slug(img.name) || 'default.png',
-			dest = join(dir, logo);
-		if (logo == 'default.png')
-			source = dest;
-		var	is = fs.createReadStream(source),
-			os = fs.createWriteStream(dest);
+		var logo = BattleUtils.slug(img.name) || 'default.png';
 		this.logo = logo;
-		util.pump(is, os, function(err) {
+		BattleUtils.copyImage(img, function(err) {
 			if (err) return next(err);
-			fs.unlinkSync(source);
 			self.save(function (err, self) {
 				return fn(err, self);
 			});
 		});
-	}
+	}	
 	else {
 		this.save(function (err, self) {
 			return fn(err, self);
@@ -169,20 +161,10 @@ TeamSchema.methods.update = function(name, divisionId, img, players, fn) {
 };
 
 TeamSchema.statics.createTeam = function(name, divisionId, img, players, fn) {
-	var source = img.path,
-		dir = app.get('photos'),
-		logo = BattleUtils.slug(img.name) || 'default.png',
-		dest = join(dir, logo);
-	if (logo == 'default.png')
-		source = dest;
-	var	is = fs.createReadStream(source),
-		os = fs.createWriteStream(dest);
-	
+	var logo = BattleUtils.slug(img.name) || 'default.png';
 	var self = this;
-	util.pump(is, os, function(err) {
+	BattleUtils.copyImage(img, function(err) {
 		if (err) return next(err);
-		fs.unlinkSync(source);
-		
 		self.create({
 			name: name,
 			division: divisionId,
@@ -191,7 +173,7 @@ TeamSchema.statics.createTeam = function(name, divisionId, img, players, fn) {
 		}, function(err){
 			return fn(err);
 		});	
-	});
+	});	
 };
 
 /**
@@ -216,6 +198,43 @@ PlayerSchema.statics.findById = function(id, fn) {
         if (err) return fn(err);
         return fn(null, player);
 	});
+};
+
+PlayerSchema.statics.createPlayer = function(name, divisionId, img, fn) {
+	var self = this;
+	var photo = BattleUtils.slug(img.name) || 'default.png';
+	BattleUtils.copyImage(img, function(err) {
+		if (err) return next(err);
+		self.create({
+			name: name,
+			division: divisionId,
+			photo: photo
+		}, function(err){
+			return fn(err);
+		});	
+	});
+};
+
+
+PlayerSchema.methods.update = function(name, divisionId, img, fn) {
+	this.name = name;
+	this.division = divisionId;
+	var self = this;
+	if (img.name) {
+		var photo = BattleUtils.slug(img.name) || 'default.png';
+		this.photo = photo;
+		BattleUtils.copyImage(img, function(err) {
+			if (err) return next(err);
+			self.save(function (err, self) {
+				return fn(err, self);
+			});
+		});
+	}
+	else {
+		this.save(function (err, self) {
+			return fn(err, self);
+		});
+	}
 };
 
 PlayerSchema.statics.getPlayersByDivisionId = function(divisionId, fn) {
@@ -244,7 +263,6 @@ var BattleSchema = new Schema({
 	'countdown': Number, 
 	'teams': Schema.Types.Mixed,
 	'divisions': Schema.Types.Mixed,
-	'done': {type: Boolean, default: false},
 	'started': {type: Boolean, default: false}
 });
 
@@ -269,8 +287,7 @@ BattleSchema.statics.findById = function(id, fn) {
 
 BattleSchema.statics.isValid = function(division1, division2, fn) {
 	var battleKey = division1.key + "" + division2.key;
-	// TODO : tester 'started' et 'done'
-	this.findOne({key: battleKey}, function(err, battle) {
+	this.findOne({key: battleKey, countdown: {$gt: 0}}, function(err, battle) {
         if (err) return fn(err);
         if (battle) {
         	return fn(null, battle, "Cette battle est déjà en cours !");
@@ -300,7 +317,7 @@ BattleSchema.statics.createBattle = function(division1, division2, duree, teams,
 };
 
 BattleSchema.statics.findBattlesInProgress = function(fn) {
-	this.find({started: true, done: false}, function(err, battles) {
+	this.find({started: true, countdown: {$gt: 0}}, function(err, battles) {
 		if (err) return fn(err);
 		return fn(null, battles);
 	});	

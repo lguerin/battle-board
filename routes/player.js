@@ -57,31 +57,29 @@ exports.form = function(req, res) {
 	
 };
 
-exports.submit = function(dir) {
+exports.submit = function() {
 	return function(req, res, next) {
 		var img = req.files.photo,
 			name = req.body.name,
 			division = req.body.division, 
-			source = img.path,
-			photo = BattleUtils.slug(img.name) || 'default.png',
-			dest = join(dir, photo);
+			photo = BattleUtils.slug(img.name) || 'default.png';
 		
-		var is = fs.createReadStream(source);
-		var os = fs.createWriteStream(dest);
-
-		util.pump(is, os, function(err) {
-			if (err) return next(err);
-			fs.unlinkSync(source);
-			var player = new Player({
-				name: name,
-				division: division,
-				photo: photo
+		var playerId = req.params.id;
+		if (playerId) {
+			Player.findById(playerId, function(err, player) {
+				if (err) return next(err);
+				player.update(name, division, img, function(err) {
+					if (err) return next(err);
+					res.redirect('admin/player');
+				});
 			});
-			player.save(function(err){
+		}
+		else {
+			Player.createPlayer(name, division, img, function(err) {
 				if (err) return next(err);
 				res.redirect('admin/player');
 			});
-		});
+		}
 	};
 };
 

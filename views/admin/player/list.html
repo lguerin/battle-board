@@ -5,7 +5,9 @@
 				{{#each players}}
 	  			<li>
 	 				<a style="text-align: center;" class="thumbnail plain" href="/admin/player/edit/{{id}}">
-						{{name}} <br />
+	 					<img class="player-photo" src="/photos/{{photo}}" />
+	 					<h5>{{name}}</h5>
+	    				<br clear="both" />
 						<i class="icon-globe"></i> {{division.label}}
 					</a>
 	  			</li>

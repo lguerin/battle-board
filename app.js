@@ -107,7 +107,8 @@ app.get('/admin/team/delete/:id', team.remove);
 app.get('/admin/player', player.list);
 app.get('/admin/player/add', player.form);
 app.get('/admin/player/edit/:id', player.form);
-app.post('/admin/player/add', player.submit(app.get('photos')));
+app.post('/admin/player/edit/:id', player.submit());
+app.post('/admin/player/add', player.submit());
 app.get('/admin/player/delete/:id', player.remove);
 
 app.get('/admin/battle/add', battle.form);
