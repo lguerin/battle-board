@@ -97,6 +97,13 @@ BattleBoard.Battle.prototype.playAlarm = function() {
 	gameSound.play();
 };
 
+BattleBoard.Battle.prototype.alarmBoard = function() {
+	$('#board').addClass('alarm-board');
+	$('#board').effect("pulsate", {times: 5}, 5000, function() {
+		$('#board').removeClass('alarm-board');	
+	});
+};
+
 BattleBoard.Battle.prototype._initBattle = function() {
 	var self = this;
 	buzz.defaults.formats = [ 'ogg', 'mp3' ];
@@ -112,6 +119,7 @@ BattleBoard.Battle.prototype._initBattle = function() {
 		});
 		
 		this.socket.on('alarm', function() {
+			self.alarmBoard();
 			self.playAlarm();			
 		});
 	}	

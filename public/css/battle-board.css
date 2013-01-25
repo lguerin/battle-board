@@ -5194,6 +5194,10 @@ input[type="file"] {
   -webkit-box-shadow: 0px 0px 4px 0px #ffffff;
   box-shadow: 0px 0px 4px 0px #ffffff;
 }
+.alarm-board {
+  background-color: red;
+  opacity: 0.5;
+}
 .scores .teams {
   overflow: hidden;
   margin: 20px 0;
