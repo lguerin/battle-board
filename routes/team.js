@@ -117,14 +117,27 @@ exports.submit = function() {
 exports.remove = function(req, res) {
 	var id = req.params.id;
 
-	// TODO : verifier si pas de battle en cours
-	
-	Team.findById(id, function(err, team) {
-		if (err) return next(err);
-		team.remove(function (err, team) {
-			if(err) return next(err);
-			console.log(">> Team %s deleted!", id);
-			res.redirect('admin/team');
+	var teams = [];
+	Battle.findBattlesInProgress(function(err, battles) {
+		_.each(battles, function(battle) {
+			teams = _.union(teams, _.keys(battle.teams));
 		});
+		if (_.contains(teams, id)) {
+			var errors = [].concat({msg: "Une battle est en cours avec cette équipe, la suppression est impossible pour le moment."});
+			res.locals.errors = errors;
+			exports.form(req, res);
+			return;
+		}
+		else {
+			Team.findById(id, function(err, team) {
+				if (err) return next(err);
+				team.remove(function (err, team) {
+					if(err) return next(err);
+					console.log(">> Team %s deleted!", id);
+					res.redirect('admin/team');
+				});
+			});
+		}
 	});
+
 };
