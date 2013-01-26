@@ -28,7 +28,7 @@ exports.view = function(req, res) {
 				socket.emit('init_battle', battle);
 				
 				socket.on('disconnect', function() {
-					console.log('Client Disconnected.');
+					logger.info('Client Disconnected.');
 				});
 			});
 			
@@ -155,7 +155,7 @@ exports.remove = function(req, res) {
 		if (err) return next(err);
 		 battle.remove(function (err, battle) {
 			 if(err) return next(err);
-			 console.log(">> Battle %s deleted!", id);
+			 logger.info("Battle %s deleted!", id);
 			 res.redirect('admin/battle');
 		});
 	});
@@ -201,7 +201,7 @@ exports.updateBattle = function(req, res, next) {
 		if (battle) {
 			battle.updateScore(teamId, points, function(err, battle) {
 				if(err) return next(err);
-				console.log(">> Battle %s updated!", id);
+				logger.info("Battle %s updated!", id);
 				// TODO : creer un SocketUtils
 				var io = app.get('io');
 				io.of('/' + battle.id).emit('refresh_scores', battle, points);

@@ -133,7 +133,7 @@ exports.remove = function(req, res) {
 				if (err) return next(err);
 				team.remove(function (err, team) {
 					if(err) return next(err);
-					console.log(">> Team %s deleted!", id);
+					logger.info("Team %s deleted!", id);
 					res.redirect('admin/team');
 				});
 			});

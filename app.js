@@ -18,7 +18,8 @@ var express = require('express'),
 	security = require('./lib/middleware/security'),
 	expressValidator = require('express-validator'),
 	hbsBattleHelper = require('./lib/hbs/helpers'),
-	BattleTimeManager = require('./lib/timemanager').BattleTimeManager;
+	BattleTimeManager = require('./lib/timemanager').BattleTimeManager,
+	log4js = require('log4js');
 
 // Setup local variables
 var port = (process.env.PORT || config.app.port);
@@ -58,10 +59,23 @@ app.configure(function() {
 	app.use(routes.error);
 	if ('development' == env) {
 		app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-		// DataLoader.populateDevBase();
+		log4js.configure({
+			  appenders: [
+			    { type: 'console' },
+			  ]
+		});
+		logger = log4js.getLogger();
+		logger.setLevel('DEBUG');
 	}
 	if ('production' == env) {
 		app.use(express.errorHandler());
+		log4js.configure({
+			  appenders: [
+			    { type: 'file', filename: 'logs/battle-board.log' }
+			  ]
+		});
+		logger = log4js.getLogger();
+		logger.setLevel('ERROR');
 	}
 });
 
@@ -73,7 +87,7 @@ app.set('io', io);
 
 // Start application
 server.listen(port, function () {
-	console.log('Battle Board started - Listening on port: ' + port);
+	logger.info('Battle Board started - Listening on port: ' + port);
 });
 
 // Start BattleTimeManager

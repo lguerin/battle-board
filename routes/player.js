@@ -87,7 +87,7 @@ exports.remove = function(req, res) {
 	var id = req.params.id;
 	Player.findByIdAndRemove(id, function(err) {
 		if (err) return next(err);
-		console.log(">> Player %s deleted!", id);
+		logger.info("Player %s deleted!", id);
 		res.redirect('admin/player');
 	});
 };
