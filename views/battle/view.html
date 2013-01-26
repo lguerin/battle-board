@@ -43,7 +43,7 @@
 	<% _.each(teams, function(team){ %>
 		<li data-id="<%- team.score %><%- team._id %>" class="<%- team.rank %>">
 
-	<div class="wrap">
+	<div class="wrap division<%- team.visitor %>">
 		<span class="vert-flag noise">
 			<strong><%- team.score %></strong>
 		</span>

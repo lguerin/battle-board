@@ -302,7 +302,7 @@ BattleSchema.statics.createBattle = function(division1, division2, duree, teams,
 	var divisions = {};
 	divisions[division1._id] = division1;
 	divisions[division2._id] = division2;
-	
+
 	this.create({
 		key: battleKey,
 		label: battleLabel,

@@ -51,9 +51,16 @@ BattleBoard.Battle.prototype._initSocket = function() {
 	this.socket = io.connect(namespace);
 };
 
-BattleBoard.Battle.prototype.sortByScoreDesc = function(list) {
+BattleBoard.Battle.prototype.sortByScoreDesc = function(list, division1) {
 	var teams = _.values(list);
 	teams = _.sortBy(teams, 'score').reverse();
+	var isVisitor = 0;
+	_.each(teams, function(team){
+		if (team.division == division1) {
+			isVisitor = 1;
+		}
+		team.visitor = isVisitor;
+	});
 	teams[0].rank = 'first';
 	teams[1].rank = 'second';
 	if (teams.length > 2) {
@@ -63,14 +70,16 @@ BattleBoard.Battle.prototype.sortByScoreDesc = function(list) {
 };
 
 BattleBoard.Battle.prototype.prepareData = function(data) {
-	var teams = this.sortByScoreDesc(data.teams);
+	var division1 = _.keys(data.divisions)[0];
+	var teams = this.sortByScoreDesc(data.teams, division1);
 	var data = {teams:teams};
 	var tpl = $("#teamTpl").html();
 	$('#all').html(_.template(tpl, data));
 };
 
 BattleBoard.Battle.prototype.refreshScores = function(data, score) {
-	var teams = this.sortByScoreDesc(data.teams);
+	var division1 = _.keys(data.divisions)[0];
+	var teams = this.sortByScoreDesc(data.teams, division1);
 	var data = {teams:teams};
 	var tpl = $("#teamTpl").html();
 	var self = this;
