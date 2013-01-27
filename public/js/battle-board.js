@@ -52,14 +52,15 @@ BattleBoard.Battle.prototype._initSocket = function() {
 };
 
 BattleBoard.Battle.prototype.sortByScoreDesc = function(list, division1) {
-	var teams = _.values(list);
+	var teams = _.values(list);	
 	teams = _.sortBy(teams, 'score').reverse();
-	var isVisitor = 0;
 	_.each(teams, function(team){
 		if (team.division == division1) {
-			isVisitor = 1;
+			team.visitor = 1;
 		}
-		team.visitor = isVisitor;
+		else {
+			team.visitor = 0;
+		}
 	});
 	teams[0].rank = 'first';
 	teams[1].rank = 'second';
@@ -78,7 +79,7 @@ BattleBoard.Battle.prototype.prepareData = function(data) {
 };
 
 BattleBoard.Battle.prototype.refreshScores = function(data, score) {
-	var division1 = _.keys(data.divisions)[0];
+	var division1 = _.keys(data.divisions)[0];	
 	var teams = this.sortByScoreDesc(data.teams, division1);
 	var data = {teams:teams};
 	var tpl = $("#teamTpl").html();
