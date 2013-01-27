@@ -1,4 +1,11 @@
 <div class="form-horizontal">
+
+	{{#if teamName}}
+		<div class="alert alert-success">
+		{{points}} points donnés à l'équipe "{{teamName}}" !
+		</div>	
+	{{/if}}
+
 	<form method="post">
 		<div class="control-group">
 		

@@ -56,10 +56,10 @@ BattleBoard.Battle.prototype.sortByScoreDesc = function(list, division1) {
 	teams = _.sortBy(teams, 'score').reverse();
 	_.each(teams, function(team){
 		if (team.division == division1) {
-			team.visitor = 1;
+			team.visitor = 0;
 		}
 		else {
-			team.visitor = 0;
+			team.visitor = 1;
 		}
 	});
 	teams[0].rank = 'first';
@@ -78,7 +78,7 @@ BattleBoard.Battle.prototype.prepareData = function(data) {
 	$('#all').html(_.template(tpl, data));
 };
 
-BattleBoard.Battle.prototype.refreshScores = function(data, score) {
+BattleBoard.Battle.prototype.refreshScores = function(data, id, score) {
 	var division1 = _.keys(data.divisions)[0];	
 	var teams = this.sortByScoreDesc(data.teams, division1);
 	var data = {teams:teams};
@@ -92,8 +92,13 @@ BattleBoard.Battle.prototype.refreshScores = function(data, score) {
 		easing: 'easeInOutQuad',
 		useScaling: true
 	}, function() {
-		self.playScoreSound(score);
+		self.playScoreSound(score);		
+		self.highlightTeam(id);
 	});
+};
+
+BattleBoard.Battle.prototype.highlightTeam = function(teamId) {
+	$('#' + teamId).effect("pulsate", {times: 4}, 4000);
 };
 
 BattleBoard.Battle.prototype.playScoreSound = function(score) {
@@ -124,8 +129,8 @@ BattleBoard.Battle.prototype._initBattle = function() {
 			self.prepareData(data);
 		});
 		
-		this.socket.on('refresh_scores', function(data, score) {
-			self.refreshScores(data, score);			
+		this.socket.on('refresh_scores', function(data, id, score) {
+			self.refreshScores(data, id, score);			
 		});
 		
 		this.socket.on('alarm', function() {

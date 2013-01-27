@@ -1,7 +1,6 @@
 {{!< ../layout-light.html}}
 
 <body lang="fr">
- 
   <div class="container">
   <div class="span12>
 	<div class="row">
@@ -43,7 +42,7 @@
 	<% _.each(teams, function(team){ %>
 		<li data-id="<%- team.score %><%- team._id %>" class="<%- team.rank %>">
 
-	<div class="wrap division<%- team.visitor %>">
+	<div class="wrap division<%- team.visitor %>" id="<%- team._id %>">
 		<span class="vert-flag noise">
 			<strong><%- team.score %></strong>
 		</span>

@@ -5213,16 +5213,16 @@ input[type="file"] {
   display: none;
 }
 .scores .teams li.first {
-  width: 800px;
+  width: 900px;
   text-align: center;
 }
 .scores .teams li.second {
-  width: 350px;
+  width: 420px;
   float: left;
   text-align: right;
 }
 .scores .teams li.third {
-  width: 450px;
+  width: 420px;
   float: right;
   text-align: left;
 }

@@ -204,13 +204,16 @@ exports.updateBattle = function(req, res, next) {
 				logger.info("Battle %s updated!", id);
 				// TODO : creer un SocketUtils
 				var io = app.get('io');
-				io.of('/' + battle.id).emit('refresh_scores', battle, points);
+				io.of('/' + battle.id).emit('refresh_scores', battle, teamId, points);
 				var list = _.sortBy(battle.teams, 'name');
+				var teamName = battle.teams[teamId].name; 
 				res.render(
 						'admin/battle/score', {
 							title: "Scores de la Battle",
 							battle: battle,
-							teams: list
+							teams: list,
+							teamName: teamName,
+							points: points
 			    });
 			});
 		}

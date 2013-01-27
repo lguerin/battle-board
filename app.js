@@ -83,6 +83,15 @@ var server = http.createServer(app);
 
 // Setup Socket.IO
 var io = io.listen(server);
+io.configure(function () {
+    io.set('authorization', function (handshakeData, callback) {
+        if (handshakeData.xdomain) {
+            callback('Cross-domain connections are not allowed');
+        } else {
+            callback(null, true);
+        }
+    });
+});
 app.set('io', io);
 
 // Start application
