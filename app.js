@@ -92,6 +92,25 @@ io.configure(function () {
         }
     });
 });
+io.configure('production', function(){
+	logger.info("Set Socket.IO config for production");
+	// Send minified client
+    io.enable('browser client minification');  
+    // Apply etag caching logic based on version number
+    io.enable('browser client etag');
+    // Gzip the file
+    io.enable('browser client gzip');
+    // Reduce logging level
+    io.set('log level', 1);
+    // Enable all transports (optional if you want flashsocket)
+    io.set('transports', [
+        'websocket',
+        'flashsocket',
+        'htmlfile',
+      	'xhr-polling',
+      	'jsonp-polling'
+    ]);
+  });
 app.set('io', io);
 
 // Start application
