@@ -328,9 +328,29 @@ BattleSchema.statics.findBattlesInProgress = function(fn) {
 	});	
 };
 
+/**
+* HistoItem Model
+*/
+
+var HistoScoreSchema = new Schema({
+	'battleId': {type: ObjectId, ref: 'Battle'},
+	'login': String,
+	'teamName': String,
+	'points': Number,
+	'created': { type: Date, default: Date.now}
+});
+
+HistoScoreSchema.statics.findByBattleId = function(battleId, fn) {
+	this.find({battleId: battleId}, function(err, scores) {
+        if (err) return fn(err);
+        return fn(null, scores);
+	});
+}
+
 // Export models
 module.exports.Division = mongoose.model('Division', DivisionSchema);
 module.exports.User = mongoose.model('User', UserSchema);
 module.exports.Team = mongoose.model('Team', TeamSchema);
 module.exports.Player = mongoose.model('Player', PlayerSchema);
 module.exports.Battle = mongoose.model('Battle', BattleSchema);
+module.exports.HistoScore = mongoose.model('HistoScore', HistoScoreSchema);

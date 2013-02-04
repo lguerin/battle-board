@@ -5,7 +5,8 @@ var Division = require('../models/schema').Division,
 	async = require('async'),
 	config = require('config'),
 	_ = require('underscore'),
-	BattleTimeManager = require('../lib/timemanager').BattleTimeManager;
+	BattleTimeManager = require('../lib/timemanager').BattleTimeManager,
+	HistoScore = require('../models/schema').HistoScore;
 
 exports.view = function(req, res) {
 	var id = req.params.id;
@@ -207,6 +208,16 @@ exports.updateBattle = function(req, res, next) {
 				io.of('/' + battle.id).emit('refresh_scores', battle, teamId, points);
 				var list = _.sortBy(battle.teams, 'name');
 				var teamName = battle.teams[teamId].name; 
+				
+				// Archive score
+				var histo = new HistoScore({
+					'battleId': id,
+					'login': req.user.login,
+					'teamName': teamName,
+					'points': points
+				});
+				histo.save();
+				
 				res.render(
 						'admin/battle/score', {
 							title: "Scores de la Battle",
@@ -217,5 +228,21 @@ exports.updateBattle = function(req, res, next) {
 			    });
 			});
 		}
+	});
+};
+
+exports.histo = function(req, res) {
+	var id = req.params.id;
+	HistoScore.findByBattleId(id, function(err, scores) {
+		if (err) return next(err);
+		for (var i = 0; i < scores.length; i++) {
+			_.extend(scores[i], {date: BattleUtils.formattedDate(scores[i].created, true)});
+		}
+		res.render(
+			'admin/battle/histo', {
+				title: "Historique des points",
+				scores: scores,
+				battleId: id
+    	});
 	});
 };

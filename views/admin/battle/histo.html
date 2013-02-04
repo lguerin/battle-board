@@ -1,0 +1,33 @@
+<div class="row-fluid">
+	<div id="content" class="span12>">
+			{{#if scores}}
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Utilisateur</th>
+							<th>Equipe</th>
+							<th>Points</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+					{{#each scores}}
+						<tr>
+							<td>{{login}}</td>
+							<td>{{teamName}}</td>
+							<td>{{points}}</td>
+							<td>{{date}}</td>
+						</tr>
+		  			{{/each}}
+		  			</tbody>
+	  			</table>
+  			{{else}}
+  				Historique des points vide.
+  			{{/if}}
+		
+		<br />
+		<div class="form-actions">
+        	<a class="btn" href="/admin/battle/score/{{battleId}}">Retour</a>&nbsp;     
+        </div>		
+	</div>
+</div>

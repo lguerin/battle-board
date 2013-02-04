@@ -158,6 +158,7 @@ app.post('/admin/battle/add', battle.submit);
 app.get('/admin/battle', battle.list);
 app.get('/admin/battle/delete/:id', battle.remove);
 app.get('/admin/battle/score/:id', battle.score);
+app.get('/admin/battle/histo/:id', battle.histo);
 app.put('/admin/battle/score/:id', battle.updateBattle);
 
 /**
