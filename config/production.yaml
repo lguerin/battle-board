@@ -1,0 +1,13 @@
+app:
+  port: 80
+  cookie_secret: "80battle!89-543MM$sdf"
+db:
+  url: "mongodb://localhost/battle"
+auth:
+  salt: "batte!98(-qsd#"
+  default_admin_pass: "battle!2013"
+score:
+  min: "-10"
+  max: 30
+battle:
+  refresh_period: 60

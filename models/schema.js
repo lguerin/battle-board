@@ -4,11 +4,7 @@ var crypto = require('crypto'),
 	ObjectId = Schema.ObjectId,
 	config = require('config'),
 	_ = require('underscore'),
-	BattleUtils = require('../lib/battleutils').BattleUtils,
-	path = require('path'),
-	fs = require('fs'),
-	util = require('util'),
-	join = path.join;
+	BattleUtils = require('../lib/battleutils').BattleUtils;
 
 /**
 * Division Model
@@ -39,6 +35,15 @@ DivisionSchema.statics.listAll = function(fn) {
 	this.find({}, function(err, divisions) {
 		if (err) return fn(err);
 		return fn(null, divisions);
+	});	
+};
+
+DivisionSchema.statics.createDivision = function(key, label, fn) {
+	this.create({
+		key: key,
+		label: label
+	}, function(err, division){
+		return fn(err, division);
 	});	
 };
 
