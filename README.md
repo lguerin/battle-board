@@ -16,9 +16,15 @@ Instructions
 - launchDev.cmd / launch.sh
 - Se connecter en admin/battle
 - Créer des joueurs
+
 ![Joueurs Battle Board](http://www.dreamcat.fr/github/battle-board-players.png)
+
 - Créer des équipes :
+
 ![Equipes Battle Board](http://www.dreamcat.fr/github/battle-board-teams.png)
+
 - Démarrer le battle
-![Start Battle Board](http://www.dreamcat.fr/github/battle-board-teams.png)
+
+![Start Battle Board](http://www.dreamcat.fr/github/battle-board-start.png)
+
 - Gérer les scores
